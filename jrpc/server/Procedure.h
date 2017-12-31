@@ -21,7 +21,7 @@ class Procedure: noncopyable
 {
 public:
     template<typename... ParamNameAndTypes>
-    Procedure(Func&& callback, ParamNameAndTypes &&... nameAndTypes):
+    explicit Procedure(Func&& callback, ParamNameAndTypes &&... nameAndTypes):
             callback_(std::forward<Func>(callback))
     {
         constexpr int n = sizeof...(nameAndTypes);
