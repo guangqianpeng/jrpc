@@ -7,8 +7,6 @@
 #include <jackson/Writer.h>
 #include <jackson/StringWriteStream.h>
 
-
-#include <jrpc/BufferWriteStream.h>
 #include <jrpc/Exception.h>
 #include <jrpc/server/BaseServer.h>
 #include <jrpc/server/RpcServer.h>
@@ -44,7 +42,7 @@ template <typename ProtocolServer>
 void BaseServer<ProtocolServer>::onConnection(const TcpConnectionPtr& conn)
 {
     if (conn->connected()) {
-        DEBUG("connection %s is [up]", 
+        DEBUG("connection %s is [up]",
               conn->peer().toIpPort().c_str());
         conn->setHighWaterMarkCallback(std::bind(
                 &BaseServer::onHighWatermark, this, _1, _2), kHighWatermark);

@@ -1,6 +1,5 @@
 add_library(jrpc STATIC
         RpcError.h
-        BufferWriteStream.h
         Exception.h
         util.h
         server/BaseServer.cc server/BaseServer.h
