@@ -2,8 +2,8 @@
 // Created by frank on 17-12-31.
 //
 
-#include <jrpc/common/Exception.h>
-#include <jrpc/Procedure.h>
+#include <jrpc/Exception.h>
+#include <jrpc/server/Procedure.h>
 
 using namespace jrpc;
 
@@ -59,23 +59,28 @@ bool Procedure<Func>::validateGeneric(json::Value& request) const
     }
 
     auto& params = mIter->value;
-    if (params.getSize() != params_.size()) {
+    if (params.getSize() == 0 || params.getSize() != params_.size()) {
         return false;
     }
-    if (params.isArray()) {
-        for (size_t i = 0; i < params_.size(); i++) {
-            if (params[i].getType() != params_[i].paramType)
-                return false;
-        }
-    }
-    else {
-        for (auto& p : params_) {
-            auto it = params.findMember(p.paramName);
-            if (it == params.memberEnd())
-                return false;
-            if (it->value.getType() != p.paramType)
-                return false;
-        }
+
+    switch (params.getType()) {
+        case json::TYPE_ARRAY:
+            for (size_t i = 0; i < params_.size(); i++) {
+                if (params[i].getType() != params_[i].paramType)
+                    return false;
+            }
+            break;
+        case json::TYPE_OBJECT:
+            for (auto& p : params_) {
+                auto it = params.findMember(p.paramName);
+                if (it == params.memberEnd())
+                    return false;
+                if (it->value.getType() != p.paramType)
+                    return false;
+            }
+            break;
+        default:
+            return false;
     }
     return true;
 }

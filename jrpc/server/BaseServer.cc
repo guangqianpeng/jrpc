@@ -8,10 +8,10 @@
 #include <jackson/StringWriteStream.h>
 
 
-#include <jrpc/common/BufferWriteStream.h>
-#include <jrpc/common/Exception.h>
-#include <jrpc/ConnectionManager.h>
-#include <jrpc/RpcServer.h>
+#include <jrpc/BufferWriteStream.h>
+#include <jrpc/Exception.h>
+#include <jrpc/server/BaseServer.h>
+#include <jrpc/server/RpcServer.h>
 
 using namespace jrpc;
 
@@ -26,29 +26,37 @@ const size_t kMaxMessageLen = 1024;
 namespace jrpc
 {
 
-template class ConnectionManager<RpcServer>;
+template class BaseServer<RpcServer>;
 
 }
 
 template <typename ProtocolServer>
-ConnectionManager<ProtocolServer>::ConnectionManager(EventLoop *loop, const InetAddress &listen)
+BaseServer<ProtocolServer>::BaseServer(EventLoop *loop, const InetAddress &listen)
         :server_(loop, listen)
 {
     server_.setConnectionCallback(std::bind(
-            &ConnectionManager::onConnection, this, _1));
+            &BaseServer::onConnection, this, _1));
     server_.setMessageCallback(std::bind(
-            &ConnectionManager::onMessage, this, _1, _2));
+            &BaseServer::onMessage, this, _1, _2));
 }
 
 template <typename ProtocolServer>
-void ConnectionManager<ProtocolServer>::onConnection(const TcpConnectionPtr& conn)
+void BaseServer<ProtocolServer>::onConnection(const TcpConnectionPtr& conn)
 {
-    conn->setHighWaterMarkCallback(std::bind(
-            &ConnectionManager::onHighWatermark, this, _1, _2), kHighWatermark);
+    if (conn->connected()) {
+        DEBUG("connection %s is [up]", 
+              conn->peer().toIpPort().c_str());
+        conn->setHighWaterMarkCallback(std::bind(
+                &BaseServer::onHighWatermark, this, _1, _2), kHighWatermark);
+    }
+    else {
+        DEBUG("connection %s is [down]",
+              conn->peer().toIpPort().c_str());
+    }
 }
 
 template <typename ProtocolServer>
-void ConnectionManager<ProtocolServer>::onMessage(const TcpConnectionPtr& conn, Buffer& buffer)
+void BaseServer<ProtocolServer>::onMessage(const TcpConnectionPtr& conn, Buffer& buffer)
 {
     try {
         handleMessage(conn, buffer);
@@ -58,24 +66,30 @@ void ConnectionManager<ProtocolServer>::onMessage(const TcpConnectionPtr& conn, 
         wrapException(response, e);
         sendResponse(conn, response);
         conn->shutdown();
+
+        WARN("BaseServer::onMessage() %s request error: %s",
+             conn->peer().toIpPort().c_str(), e.what());
     }
     catch (NotifyException& e)
-    {}
+    {
+        WARN("BaseServer::onMessage() %s notify error: %s",
+             conn->peer().toIpPort().c_str(), e.what());
+    }
 }
 
 template <typename ProtocolServer>
-void ConnectionManager<ProtocolServer>::onHighWatermark(const TcpConnectionPtr& conn, size_t mark)
+void BaseServer<ProtocolServer>::onHighWatermark(const TcpConnectionPtr& conn, size_t mark)
 {
     WARN("connection %s high watermark %lu",
          conn->peer().toIpPort().c_str(), mark);
 
     conn->setWriteCompleteCallback(std::bind(
-            &ConnectionManager::onWriteComplete, this, _1));
+            &BaseServer::onWriteComplete, this, _1));
     conn->stopRead();
 }
 
 template <typename ProtocolServer>
-void ConnectionManager<ProtocolServer>::onWriteComplete(const TcpConnectionPtr& conn)
+void BaseServer<ProtocolServer>::onWriteComplete(const TcpConnectionPtr& conn)
 {
     INFO("connection %s write complete",
          conn->peer().toIpPort().c_str());
@@ -83,7 +97,7 @@ void ConnectionManager<ProtocolServer>::onWriteComplete(const TcpConnectionPtr& 
 }
 
 template <typename ProtocolServer>
-void ConnectionManager<ProtocolServer>::handleMessage(const TcpConnectionPtr& conn, Buffer& buffer)
+void BaseServer<ProtocolServer>::handleMessage(const TcpConnectionPtr& conn, Buffer& buffer)
 {
     while (true) {
 
@@ -113,13 +127,20 @@ void ConnectionManager<ProtocolServer>::handleMessage(const TcpConnectionPtr& co
         buffer.retrieve(headerLen);
         auto json = buffer.retrieveAsString(bodyLen);
         convert().handleRequest(json, response);
-        if (!response.isNull())
+        if (!response.isNull()) {
             sendResponse(conn, response);
+            DEBUG("BaseServer::handleMessage() %s request success,",
+                 conn->peer().toIpPort().c_str());
+        }
+        else {
+            DEBUG("BaseServer::handleMessage() %s notify success,",
+                 conn->peer().toIpPort().c_str());
+        }
     }
 }
 
 template <typename ProtocolServer>
-void ConnectionManager<ProtocolServer>::wrapException(json::Value& response, RequestException& e)
+void BaseServer<ProtocolServer>::wrapException(json::Value& response, RequestException& e)
 {
     assert(response.isNull());
 
@@ -134,7 +155,7 @@ void ConnectionManager<ProtocolServer>::wrapException(json::Value& response, Req
 }
 
 template <typename ProtocolServer>
-void ConnectionManager<ProtocolServer>::sendResponse(const TcpConnectionPtr& conn, json::Value& response)
+void BaseServer<ProtocolServer>::sendResponse(const TcpConnectionPtr& conn, json::Value& response)
 {
     json::StringWriteStream os;
     json::Writer writer(os);
@@ -148,13 +169,13 @@ void ConnectionManager<ProtocolServer>::sendResponse(const TcpConnectionPtr& con
 }
 
 template <typename ProtocolServer>
-ProtocolServer& ConnectionManager<ProtocolServer>::convert()
+ProtocolServer& BaseServer<ProtocolServer>::convert()
 {
     return static_cast<ProtocolServer&>(*this);
 }
 
 template <typename ProtocolServer>
-const ProtocolServer& ConnectionManager<ProtocolServer>::convert() const
+const ProtocolServer& BaseServer<ProtocolServer>::convert() const
 {
     return static_cast<const ProtocolServer&>(*this);
 }

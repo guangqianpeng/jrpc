@@ -7,8 +7,8 @@
 
 #include <jackson/Value.h>
 
-#include <jrpc/common/RpcError.h>
-#include <jrpc/common/util.h>
+#include <jrpc/RpcError.h>
+#include <jrpc/util.h>
 
 namespace jrpc
 {
@@ -16,7 +16,7 @@ namespace jrpc
 class RequestException;
 
 template <typename ProtocolServer>
-class ConnectionManager: noncopyable
+class BaseServer: noncopyable
 {
 public:
     void setNumThread(size_t n) { server_.setNumThread(n); }
@@ -25,11 +25,11 @@ public:
 
 protected:
     // CRTP pattern base class
-    ConnectionManager(EventLoop* loop, const InetAddress& listen);
+    BaseServer(EventLoop* loop, const InetAddress& listen);
     // avoid this:
-    //  ConnectionManager* cm = &ProtocalServer;
+    //  BaseServer* cm = &ProtocalServer;
     //  delete cm;
-    ~ConnectionManager() = default;
+    ~BaseServer() = default;
 
 private:
     void onConnection(const TcpConnectionPtr& conn);

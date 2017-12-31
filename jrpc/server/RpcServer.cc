@@ -4,9 +4,9 @@
 
 #include <jackson/Document.h>
 
-#include <jrpc/common/Exception.h>
-#include <jrpc/RpcService.h>
-#include <jrpc/RpcServer.h>
+#include <jrpc/Exception.h>
+#include <jrpc/server/RpcService.h>
+#include <jrpc/server/RpcServer.h>
 
 using namespace jrpc;
 

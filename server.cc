@@ -2,7 +2,7 @@
 // Created by frank on 17-12-31.
 //
 
-#include <jrpc/HelloServerStub.h>
+#include "HelloServerStub.h"
 
 using namespace jrpc;
 
@@ -18,10 +18,16 @@ public:
         return std::string("hello, ").append(user);
     }
 
-    void Goodbye(json::Value& request)
+    std::string Echo(std::string_view msg)
+    {
+        return std::string(msg);
+    }
+
+    void Goodbye()
     {
         INFO("good bye");
     }
+
 };
 
 int main()

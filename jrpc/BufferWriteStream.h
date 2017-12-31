@@ -5,7 +5,7 @@
 #ifndef JRPC_BUFFERWRITER_H
 #define JRPC_BUFFERWRITER_H
 
-#include <jrpc/common/util.h>
+#include <jrpc/util.h>
 
 namespace jrpc
 {

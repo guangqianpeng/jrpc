@@ -8,7 +8,7 @@
 #include <exception>
 
 #include <jackson/Value.h>
-#include <jrpc/common/RpcError.h>
+#include <jrpc/RpcError.h>
 
 namespace jrpc
 {
@@ -75,6 +75,41 @@ private:
     RpcError err_;
     json::Value* id_;
     const char* detail_;
+};
+
+class ResponseException: public std::exception
+{
+public:
+    explicit ResponseException(const char* msg):
+            hasId_(false),
+            id_(-1),
+            msg_(msg)
+    {}
+    ResponseException(const char* msg, int32_t id):
+            hasId_(true),
+            id_(id),
+            msg_(msg)
+    {}
+
+    const char* what() const noexcept
+    {
+        return msg_;
+    }
+
+    bool hasId() const
+    {
+        return hasId_;
+    }
+
+    int32_t Id() const
+    {
+        return id_;
+    }
+
+private:
+    const bool hasId_;
+    const int32_t id_;
+    const char* msg_;
 };
 
 }

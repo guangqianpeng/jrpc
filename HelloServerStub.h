@@ -8,13 +8,9 @@
 
 #include <jackson/Value.h>
 
-#include <jrpc/common/util.h>
-#include <jrpc/RpcServer.h>
-#include <jrpc/RpcService.h>
-
-using std::placeholders::_1;
-using std::placeholders::_2;
-using std::placeholders::_3;
+#include <jrpc/util.h>
+#include <jrpc/server/RpcServer.h>
+#include <jrpc/server/RpcService.h>
 
 class HelloServer;
 
@@ -28,8 +24,8 @@ template <typename S>
 class HelloServerStub: noncopyable
 {
 protected:
-    explicit HelloServerStub(EventLoop* loop_, const InetAddress listen):
-            server_(loop_, listen)
+    HelloServerStub(EventLoop* loop, const InetAddress listen):
+            server_(loop, listen)
     {
         static_assert(std::is_same<S, HelloServer>::value,
                       "derived class name should be 'HelloServer'");
@@ -41,11 +37,15 @@ protected:
                 std::bind(&HelloServerStub::HelloStub, this, _1, _2),
                 "user", json::TYPE_STRING
         ));
-
+        service->addProcedureReturn("Echo", new ProcedureReturn(
+                std::bind(&HelloServerStub::EchoStub, this, _1, _2),
+                "msg", json::TYPE_STRING
+        ));
         // add notification
         service->addProcedureNotify("Goodbye", new ProcedureNotify(
-                std::bind(&HelloServerStub::GoodbyeStub, &convert(), _1)
+                std::bind(&HelloServerStub::GoodbyeStub, this)
         ));
+        // register service
         server_.addService("Hello", service);
     }
     ~HelloServerStub() {}
@@ -55,7 +55,7 @@ public:
     void setNumThread(size_t n) { server_.setNumThread(n); }
 
 private:
-    void HelloStub(json::Value &request, json::Value &response)
+    void HelloStub(json::Value& request, json::Value& response)
     {
         auto& params = request["params"];
 
@@ -73,10 +73,29 @@ private:
         response.addMember("id", std::move(request["id"]));
     }
 
-    void GoodbyeStub(json::Value &request)
+    void EchoStub(json::Value& request, json::Value& response)
     {
-        convert().Goodbye(request);
+        auto& params = request["params"];
+
+        auto&& param0 = [&params]()->json::Value& {
+            if (params.isArray())
+                return params[0];
+            return params["msg"];
+        }();
+
+        auto result = convert().Echo(param0.getString());
+
+        response.setObject();
+        response.addMember("jsonrpc", "2.0");
+        response.addMember("result", std::move(result));
+        response.addMember("id", std::move(request["id"]));
     }
+
+    void GoodbyeStub()
+    {
+        convert().Goodbye();
+    }
+
 
 private:
     S& convert()

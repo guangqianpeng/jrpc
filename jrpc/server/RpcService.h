@@ -7,7 +7,7 @@
 
 #include <jackson/Value.h>
 
-#include <jrpc/Procedure.h>
+#include <jrpc/server/Procedure.h>
 
 namespace jrpc
 {

@@ -2,8 +2,8 @@
 // Created by frank on 17-12-30.
 //
 
-#include <jrpc/common/Exception.h>
-#include <jrpc/RpcService.h>
+#include <jrpc/Exception.h>
+#include <jrpc/server/RpcService.h>
 
 using namespace jrpc;
 

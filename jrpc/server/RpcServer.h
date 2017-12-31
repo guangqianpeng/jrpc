@@ -10,20 +10,20 @@
 
 #include <jackson/Value.h>
 
-#include <jrpc/common/util.h>
-#include <jrpc/RpcService.h>
-#include <jrpc/ConnectionManager.h>
+#include <jrpc/util.h>
+#include <jrpc/server/RpcService.h>
+#include <jrpc/server/BaseServer.h>
 
 namespace jrpc
 {
 
 
-class RpcServer: public ConnectionManager<RpcServer>
+class RpcServer: public BaseServer<RpcServer>
 {
 
 public:
     RpcServer(EventLoop* loop, const InetAddress& listen):
-            ConnectionManager(loop, listen)
+            BaseServer(loop, listen)
     {}
     ~RpcServer(){}
 

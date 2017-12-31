@@ -8,7 +8,7 @@
 
 #include <jackson/Value.h>
 
-#include <jrpc/common/util.h>
+#include <jrpc/util.h>
 
 namespace jrpc
 {
