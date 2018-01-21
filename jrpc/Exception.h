@@ -42,9 +42,9 @@ private:
 class RequestException: public std::exception
 {
 public:
-    RequestException(RpcError err, json::Value&& id, const char* detail):
+    RequestException(RpcError err, json::Value id, const char* detail):
             err_(err),
-            id_(new json::Value(std::move(id))),
+            id_(new json::Value(id)),
             detail_(detail)
     {}
     explicit RequestException(RpcError err, const char* detail):
@@ -73,7 +73,7 @@ public:
 
 private:
     RpcError err_;
-    json::Value* id_;
+    std::unique_ptr<json::Value> id_;
     const char* detail_;
 };
 

@@ -65,25 +65,25 @@ public:
     }
 
 private:
-    void HelloStub(json::Value& params,
+    void HelloStub(json::Value params,
                    const BaseClient::ResponseCallback& cb)
     {
         json::Value request(json::TYPE_OBJECT);
         request.addMember("jsonrpc", "2.0");
         request.addMember("method", "Hello.Hello");
-        request.addMember("params", std::move(params));
+        request.addMember("params", params);
 
         assert(conn_ != nullptr);
         client_.sendRequest(conn_, request, cb);
     }
 
-    void EchoStub(json::Value& params,
+    void EchoStub(json::Value params,
                   const BaseClient::ResponseCallback& cb)
     {
         json::Value request(json::TYPE_OBJECT);
         request.addMember("jsonrpc", "2.0");
         request.addMember("method", "Hello.Echo");
-        request.addMember("params", std::move(params));
+        request.addMember("params", params);
 
         assert(conn_ != nullptr);
         client_.sendRequest(conn_, request, cb);

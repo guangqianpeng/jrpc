@@ -23,13 +23,13 @@ void Procedure<ProcedureReturnCallback>::validateRequest(json::Value &request) c
         case json::TYPE_ARRAY:
             if (!validateGeneric(request))
                 throw RequestException(RPC_INVALID_PARAMS,
-                                       std::move(request["id"]),
+                                       request["id"],
                                        "params name or type mismatch");
             break;
         default:
             throw RequestException(
                     RPC_INVALID_REQUEST,
-                    std::move(request["id"]),
+                    request["id"],
                     "params type must be object or array");
     }
 }
@@ -86,14 +86,15 @@ bool Procedure<Func>::validateGeneric(json::Value& request) const
 }
 
 template <>
-void Procedure<ProcedureReturnCallback>::invoke(json::Value& request, json::Value& response)
+void Procedure<ProcedureReturnCallback>::invoke(json::Value request,
+                                                const RpcDoneCallback& done)
 {
     validateRequest(request);
-    callback_(request, response);
+    callback_(request, done);
 }
 
 template <>
-void Procedure<ProcedureNotifyCallback>::invoke(json::Value& request)
+void Procedure<ProcedureNotifyCallback>::invoke(json::Value request)
 {
     validateRequest(request);
     callback_(request);

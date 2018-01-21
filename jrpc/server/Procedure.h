@@ -13,15 +13,15 @@
 namespace jrpc
 {
 
-typedef std::function<void(json::Value&, json::Value&)> ProcedureReturnCallback;
-typedef std::function<void(json::Value&)> ProcedureNotifyCallback;
+typedef std::function<void(json::Value, const RpcDoneCallback&)> ProcedureReturnCallback;
+typedef std::function<void(json::Value)> ProcedureNotifyCallback;
 
 template <typename Func>
 class Procedure: noncopyable
 {
 public:
     template<typename... ParamNameAndTypes>
-    explicit Procedure(Func&& callback, ParamNameAndTypes &&... nameAndTypes):
+    explicit Procedure(Func&& callback, ParamNameAndTypes&&... nameAndTypes):
             callback_(std::forward<Func>(callback))
     {
         constexpr int n = sizeof...(nameAndTypes);
@@ -32,16 +32,16 @@ public:
     }
 
     // procedure call
-    void invoke(json::Value& request, json::Value& response);
+    void invoke(json::Value request, const RpcDoneCallback& done);
     // procedure notify
-    void invoke(json::Value& request);
+    void invoke(json::Value request);
 
 private:
     template<typename Name, typename... ParamNameAndTypes>
     void initProcedure(Name paramName, json::ValueType parmType, ParamNameAndTypes &&... nameAndTypes)
     {
-        static_assert(std::is_same<Name, const char *>::value ||
-                      std::is_same<Name, std::string_view>::value,
+        static_assert(std::is_same_v<Name, const char *> ||
+                      std::is_same_v<Name, std::string_view>,
                       "param name must be 'const char*' or 'std::string_view'");
         params_.emplace_back(paramName, parmType);
         if constexpr (sizeof...(ParamNameAndTypes) > 0)
@@ -51,7 +51,7 @@ private:
     template<typename Name, typename Type, typename... ParamNameAndTypes>
     void initProcedure(Name paramName, Type parmType, ParamNameAndTypes &&... nameAndTypes)
     {
-        static_assert(std::is_same<Type, json::ValueType>::value, "param type must be json::ValueType");
+        static_assert(std::is_same_v<Type, json::ValueType>, "param type must be json::ValueType");
     }
 
     void validateRequest(json::Value& request) const;

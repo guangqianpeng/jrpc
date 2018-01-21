@@ -17,8 +17,11 @@ class HelloServer;
 namespace jrpc
 {
 
-// 75 {"jsonrpc": "2.0", "method": "Hello.Hello", "params": ["frank"], "id": 1}\r\n
-// 47 {"jsonrpc": "2.0", "method": "Hello.Goodbye"}\r\n
+// 75\r\n{"jsonrpc": "2.0", "method": "Hello.Hello", "params": ["frank"], "id": 1}\r\n
+// 77\r\n[{"jsonrpc": "2.0", "method": "Hello.Hello", "params": ["frank"], "id": 1}]\r\n
+// 47\r\n{"jsonrpc": "2.0", "method": "Hello.Goodbye"}\r\n
+
+typedef std::function<void(std::string&)> HelloDoneCallback;
 
 template <typename S>
 class HelloServerStub: noncopyable
@@ -27,7 +30,7 @@ protected:
     HelloServerStub(EventLoop* loop, const InetAddress listen):
             server_(loop, listen)
     {
-        static_assert(std::is_same<S, HelloServer>::value,
+        static_assert(std::is_same_v<S, HelloServer>,
                       "derived class name should be 'HelloServer'");
 
         auto service = new RpcService;
@@ -48,32 +51,33 @@ protected:
         // register service
         server_.addService("Hello", service);
     }
-    ~HelloServerStub() {}
+    ~HelloServerStub() = default;
 
 public:
     void start() { server_.start(); }
     void setNumThread(size_t n) { server_.setNumThread(n); }
 
 private:
-    void HelloStub(json::Value& request, json::Value& response)
+    void HelloStub(json::Value request, const RpcDoneCallback& done)
     {
-        auto& params = request["params"];
+        auto &params = request["params"];
 
-        auto&& param0 = [&params]()->json::Value& {
+        auto &&param0 = [&params]() -> json::Value & {
             if (params.isArray())
                 return params[0];
             return params["user"];
         }();
 
         auto result = convert().Hello(param0.getString());
-
-        response.setObject();
+        json::Value response(json::TYPE_OBJECT);
         response.addMember("jsonrpc", "2.0");
-        response.addMember("result", std::move(result));
-        response.addMember("id", std::move(request["id"]));
+        response.addMember("id", request["id"]);
+        response.addMember("result", result);
+
+        done(response);
     }
 
-    void EchoStub(json::Value& request, json::Value& response)
+    void EchoStub(json::Value request, const RpcDoneCallback& done)
     {
         auto& params = request["params"];
 
@@ -85,10 +89,12 @@ private:
 
         auto result = convert().Echo(param0.getString());
 
-        response.setObject();
+        json::Value response(json::TYPE_OBJECT);
         response.addMember("jsonrpc", "2.0");
-        response.addMember("result", std::move(result));
-        response.addMember("id", std::move(request["id"]));
+        response.addMember("result", result);
+        response.addMember("id", request["id"]);
+
+        done(response);
     }
 
     void GoodbyeStub()
@@ -110,6 +116,6 @@ private:
 }
 
 
-#define HelloServerImpl class HelloServer: public jrpc::HelloServerStub<HelloServer>
+#define HelloServerImpl HelloServer: public jrpc::HelloServerStub<HelloServer>
 
 #endif //JRPC_SERVERSTUB_H

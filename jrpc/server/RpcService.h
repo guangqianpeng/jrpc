@@ -28,8 +28,10 @@ public:
         procedureNotfiy_.emplace(methodName, p);
     }
 
-    void callProcedureReturn(std::string_view methodName, json::Value& request, json::Value& response);
-    void callProcedureNotify(std::string_view methodName, json::Value& request);
+    void callProcedureReturn(std::string_view methodName,
+                             json::Value request,
+                             const RpcDoneCallback& done);
+    void callProcedureNotify(std::string_view methodName, json::Value request);
 
 private:
     typedef std::unique_ptr<ProcedureReturn> ProcedureReturnPtr;

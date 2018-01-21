@@ -7,18 +7,20 @@
 
 using namespace jrpc;
 
-void RpcService::callProcedureReturn(std::string_view methodName, json::Value& request, json::Value& response)
+void RpcService::callProcedureReturn(std::string_view methodName,
+                                     json::Value request,
+                                     const RpcDoneCallback& done)
 {
     auto it = procedureReturn_.find(methodName);
     if (it == procedureReturn_.end()) {
         throw RequestException(RPC_METHOD_NOT_FOUND,
-                               std::move(request["id"]),
+                               request["id"],
                                "method not found");
     }
-    it->second->invoke(request, response);
+    it->second->invoke(request, done);
 };
 
-void RpcService::callProcedureNotify(std::string_view methodName, json::Value& request)
+void RpcService::callProcedureNotify(std::string_view methodName, json::Value request)
 {
     auto it = procedureNotfiy_.find(methodName);
     if (it == procedureNotfiy_.end()) {

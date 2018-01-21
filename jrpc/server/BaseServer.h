@@ -39,13 +39,13 @@ private:
 
     void handleMessage(const TcpConnectionPtr& conn, Buffer& buffer);
 
-    void sendResponse(const TcpConnectionPtr& conn, json::Value& response);
+    void sendResponse(const TcpConnectionPtr& conn, const json::Value& response);
 
     ProtocolServer& convert();
     const ProtocolServer& convert() const;
 
 protected:
-    void wrapException(json::Value& response, RequestException& e);
+    json::Value wrapException(RequestException& e);
 
 private:
     TcpServer server_;

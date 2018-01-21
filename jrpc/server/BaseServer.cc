@@ -29,7 +29,7 @@ template class BaseServer<RpcServer>;
 }
 
 template <typename ProtocolServer>
-BaseServer<ProtocolServer>::BaseServer(EventLoop *loop, const InetAddress &listen)
+BaseServer<ProtocolServer>::BaseServer(EventLoop *loop, const InetAddress& listen)
         :server_(loop, listen)
 {
     server_.setConnectionCallback(std::bind(
@@ -60,8 +60,7 @@ void BaseServer<ProtocolServer>::onMessage(const TcpConnectionPtr& conn, Buffer&
         handleMessage(conn, buffer);
     }
     catch (RequestException& e) {
-        json::Value response;
-        wrapException(response, e);
+        json::Value response = wrapException(e);
         sendResponse(conn, response);
         conn->shutdown();
 
@@ -114,46 +113,44 @@ void BaseServer<ProtocolServer>::handleMessage(const TcpConnectionPtr& conn, Buf
             throw RequestException(RPC_INVALID_REQUEST, "invalid message length");
         }
 
-        auto bodyLen = static_cast<uint32_t>(header.getInt32());
-        if (bodyLen >= kMaxMessageLen)
+        auto jsonLen = static_cast<uint32_t>(header.getInt32());
+        if (jsonLen >= kMaxMessageLen)
             throw RequestException(RPC_INVALID_REQUEST, "message is too long");
 
-        if (buffer.readableBytes() < headerLen + bodyLen)
+        if (buffer.readableBytes() < headerLen + jsonLen)
             break;
 
-        json::Value response;
         buffer.retrieve(headerLen);
-        auto json = buffer.retrieveAsString(bodyLen);
-        convert().handleRequest(json, response);
-        if (!response.isNull()) {
-            sendResponse(conn, response);
-            DEBUG("BaseServer::handleMessage() %s request success,",
-                 conn->peer().toIpPort().c_str());
-        }
-        else {
-            DEBUG("BaseServer::handleMessage() %s notify success,",
-                 conn->peer().toIpPort().c_str());
-        }
+        auto json = buffer.retrieveAsString(jsonLen);
+        convert().handleRequest(json, [conn, this](json::Value&& response) {
+            if (!response.isNull()) {
+                sendResponse(conn, response);
+                DEBUG("BaseServer::handleMessage() %s request success",
+                      conn->peer().toIpPort().c_str());
+            }
+            else {
+                DEBUG("BaseServer::handleMessage() %s notify success",
+                      conn->peer().toIpPort().c_str());
+            }
+        });
     }
 }
 
 template <typename ProtocolServer>
-void BaseServer<ProtocolServer>::wrapException(json::Value& response, RequestException& e)
+json::Value BaseServer<ProtocolServer>::wrapException(RequestException& e)
 {
-    assert(response.isNull());
-
-    response.setObject();
+    json::Value response(json::TYPE_OBJECT);
     response.addMember("jsonrpc", "2.0");
     auto& value = response.addMember("error", json::TYPE_OBJECT);
     value.addMember("code", e.err().asCode());
     value.addMember("message", e.err().asString());
     value.addMember("data", e.detail());
-    response.addMember("id", std::move(e.id()));
-
+    response.addMember("id", e.id());
+    return response;
 }
 
 template <typename ProtocolServer>
-void BaseServer<ProtocolServer>::sendResponse(const TcpConnectionPtr& conn, json::Value& response)
+void BaseServer<ProtocolServer>::sendResponse(const TcpConnectionPtr& conn, const json::Value& response)
 {
     json::StringWriteStream os;
     json::Writer writer(os);

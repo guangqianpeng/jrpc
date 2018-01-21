@@ -17,6 +17,7 @@
 #include <tinyev/Logger.h>
 #include <tinyev/Callbacks.h>
 #include <tinyev/Timestamp.h>
+#include <tinyev/ThreadPool.h>
 
 namespace jrpc
 {
@@ -29,15 +30,18 @@ using std::placeholders::_2;
 using std::placeholders::_3;
 using std::placeholders::_4;
 
-using tinyev::EventLoop;
-using tinyev::TcpConnection;
-using tinyev::TcpServer;
-using tinyev::TcpClient;
-using tinyev::InetAddress;
-using tinyev::TcpConnectionPtr;
-using tinyev::noncopyable;
-using tinyev::Buffer;
-using tinyev::ConnectionCallback;
+using ev::EventLoop;
+using ev::TcpConnection;
+using ev::TcpServer;
+using ev::TcpClient;
+using ev::InetAddress;
+using ev::TcpConnectionPtr;
+using ev::noncopyable;
+using ev::Buffer;
+using ev::ConnectionCallback;
+using ev::ThreadPool;
+
+typedef std::function<void(json::Value response)> RpcDoneCallback;
 
 }
 

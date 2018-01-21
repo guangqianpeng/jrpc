@@ -25,18 +25,21 @@ public:
     RpcServer(EventLoop* loop, const InetAddress& listen):
             BaseServer(loop, listen)
     {}
-    ~RpcServer(){}
+    ~RpcServer() = default;
 
     // used by user stub
     void addService(std::string_view serviceName, RpcService* service);
 
     // used by connection manager
-    void handleRequest(std::string& json, json::Value& response);
+    void handleRequest(const std::string& json,
+                       const RpcDoneCallback& done);
 
 private:
-    void handleSingleRequest(json::Value& request, json::Value& response);
-    void handleSingleNotify(json::Value& request);
-    void handleBatchRequests(json::Value& requests, json::Value& responses);
+    void handleSingleRequest(json::Value request,
+                             const RpcDoneCallback& done);
+    void handleBatchRequests(json::Value requests,
+                             const RpcDoneCallback& done);
+    void handleSingleNotify(json::Value request);
 
     void validateRequest(json::Value& request);
     void validateNotify(json::Value& request);

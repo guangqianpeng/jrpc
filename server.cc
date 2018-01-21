@@ -6,11 +6,11 @@
 
 using namespace jrpc;
 
-HelloServerImpl
+class HelloServerImpl
 {
 public:
     HelloServer(EventLoop* loop, const InetAddress& listen):
-            HelloServerStub(loop, listen)
+            HelloServerStub(loop, listen),
     {}
 
     std::string Hello(std::string_view user)
@@ -27,7 +27,6 @@ public:
     {
         INFO("good bye");
     }
-
 };
 
 int main()
