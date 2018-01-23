@@ -45,6 +45,30 @@ using ev::CountDownLatch;
 
 typedef std::function<void(json::Value response)> RpcDoneCallback;
 
+class UserDoneCallback
+{
+public:
+    UserDoneCallback(json::Value &request,
+                     const RpcDoneCallback &callback)
+            : request_(request),
+              callback_(callback)
+    {}
+
+
+    void operator()(json::Value &&result) const
+    {
+        json::Value response(json::TYPE_OBJECT);
+        response.addMember("jsonrpc", "2.0");
+        response.addMember("id", request_["id"]);
+        response.addMember("result", result);
+        callback_(response);
+    }
+
+private:
+    mutable json::Value request_;
+    RpcDoneCallback callback_;
+};
+
 }
 
 #endif //JRPC_UTIL_H

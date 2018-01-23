@@ -2,8 +2,8 @@
 // Created by frank on 17-12-31.
 //
 
-#ifndef JRPC_CLIENTSTUB_H
-#define JRPC_CLIENTSTUB_H
+#ifndef JRPC_HELLOCLIENTSTUB_H
+#define JRPC_HELLOCLIENTSTUB_H
 
 #include <jackson/Value.h>
 
@@ -40,9 +40,9 @@ public:
     {
         cb_ = cb;
     }
-    
+
     void Hello(std::string_view user,
-               const BaseClient::ResponseCallback& cb)
+               const ResponseCallback& cb)
     {
         json::Value params(json::TYPE_OBJECT);
         params.addMember("user", user);
@@ -50,7 +50,7 @@ public:
     }
 
     void Add(int32_t lhs, int32_t rhs,
-             const BaseClient::ResponseCallback &cb)
+             const ResponseCallback &cb)
     {
         json::Value params(json::TYPE_OBJECT);
         params.addMember("lhs", lhs);
@@ -66,7 +66,7 @@ public:
 
 private:
     void HelloStub(json::Value& params,
-                   const BaseClient::ResponseCallback& cb)
+                   const ResponseCallback& cb)
     {
         json::Value request(json::TYPE_OBJECT);
         request.addMember("jsonrpc", "2.0");
@@ -78,7 +78,7 @@ private:
     }
 
     void AddStub(json::Value& params,
-                 const BaseClient::ResponseCallback &cb)
+                 const ResponseCallback &cb)
     {
         json::Value request(json::TYPE_OBJECT);
         request.addMember("jsonrpc", "2.0");

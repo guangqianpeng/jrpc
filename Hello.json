@@ -3,17 +3,16 @@
   "rpc": [
     {
       "name": "Hello",
-      "params": "string",
-      "return": "string"
+      "params": { "string": "user" },
+      "returns": "string"
     },
     {
       "name": "Add",
       "params": { "lhs": 1, "rhs": 1 },
-      "return": 2
+      "returns": 2
     },
     {
-      "name": "Goodbye",
-      "params": null
+      "name": "Goodbye"
     }
   ]
 }

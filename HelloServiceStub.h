@@ -2,8 +2,8 @@
 // Created by frank on 17-12-31.
 //
 
-#ifndef JRPC_SERVERSTUB_H
-#define JRPC_SERVERSTUB_H
+#ifndef JRPC_HELLOSERVICESTUB_H
+#define JRPC_HELLOSERVICESTUB_H
 
 
 #include <jackson/Value.h>
@@ -22,49 +22,7 @@ namespace jrpc
 // 86\r\n[{"jsonrpc": "2.0", "method": "Hello.Add", "params": {"lhs": 1, "rhs": 2}, "id": 1}]\r\n
 // 47\r\n{"jsonrpc": "2.0", "method": "Hello.Goodbye"}\r\n
 
-class HelloDoneCallback
-{
-public:
-    HelloDoneCallback(json::Value& request, const RpcDoneCallback& callback)
-            : request_(request),
-              callback_(callback)
-    {}
 
-    void operator()(std::string result) const
-    {
-        json::Value response(json::TYPE_OBJECT);
-        response.addMember("jsonrpc", "2.0");
-        response.addMember("id", request_["id"]);
-        response.addMember("result", result);
-        callback_(response);
-    }
-
-private:
-    mutable json::Value request_;
-    RpcDoneCallback callback_;
-};
-
-class AddDoneCallback
-{
-public:
-    AddDoneCallback(json::Value& request, const RpcDoneCallback& callback)
-            : request_(request),
-              callback_(callback)
-    {}
-
-    void operator()(int32_t result) const
-    {
-        json::Value response(json::TYPE_OBJECT);
-        response.addMember("jsonrpc", "2.0");
-        response.addMember("id", request_["id"]);
-        response.addMember("result", result);
-        callback_(response);
-    }
-
-private:
-    mutable json::Value request_;
-    RpcDoneCallback callback_;
-};
 
 template <typename S>
 class HelloServiceStub: noncopyable
@@ -111,7 +69,7 @@ private:
         }
 
         // request is moved in
-        convert().Hello(user, HelloDoneCallback(request, done));
+        convert().Hello(user, UserDoneCallback(request, done));
     }
 
     void AddStub(json::Value& request, const RpcDoneCallback& done)
@@ -129,7 +87,7 @@ private:
             rhs = params["rhs"].getInt32();
         }
 
-        convert().Add(lhs, rhs, AddDoneCallback(request, done));
+        convert().Add(lhs, rhs, UserDoneCallback(request, done));
     }
 
     void GoodbyeStub()
@@ -147,4 +105,4 @@ private:
 
 }
 
-#endif //JRPC_SERVERSTUB_H
+#endif //JRPC_HELLOSERVICESTUB_H

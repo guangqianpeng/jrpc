@@ -15,7 +15,7 @@ public:
             pool_(2)
     {}
 
-    void Hello(std::string user, const HelloDoneCallback& done)
+    void Hello(std::string user, const UserDoneCallback& done)
     {
         std::string result;
         if (user == "苟利国家生死以") {
@@ -23,13 +23,13 @@ public:
         } else {
             result = std::string("hello, ").append(user);
         }
-        done(std::move(result));
+        done(json::Value(result));
     }
 
-    void Add(int32_t lhs, int32_t rhs, const AddDoneCallback& done)
+    void Add(int32_t lhs, int32_t rhs, const UserDoneCallback& done)
     {
         pool_.runTask([=](){
-            done(lhs + rhs);
+            done(json::Value(lhs + rhs));
         });
     }
 

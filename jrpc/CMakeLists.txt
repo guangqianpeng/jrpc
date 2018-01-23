@@ -8,3 +8,5 @@ add_library(jrpc STATIC
         server/Procedure.cc server/Procedure.h client/BaseClient.cc client/BaseClient.h)
 
 target_link_libraries(jrpc tinyev jackson)
+
+add_subdirectory(stub_generator)

@@ -12,12 +12,14 @@
 namespace jrpc
 {
 
+typedef std::function<void(json::Value&,
+                           bool isError,
+                           bool isTimeout)> ResponseCallback;
+
 class BaseClient: noncopyable
 {
 public:
-    typedef std::function<void(json::Value&,
-                               bool isError,
-                               bool isTimeout)> ResponseCallback;
+
 
 public:
     BaseClient(EventLoop* loop, const InetAddress& serverAddress):
