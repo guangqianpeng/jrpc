@@ -102,14 +102,16 @@ private:
     {
         auto& params = request["params"];
 
-        auto&& user = [&params]()->json::Value& {
-            if (params.isArray())
-                return params[0];
-            return params["user"];
-        }();
+        std::string user;
+        if (params.isArray()) {
+            user = params[0].getString();
+        }
+        else {
+            user = params["user"].getString();
+        }
 
         // request is moved in
-        convert().Hello(user.getString(), HelloDoneCallback(request, done));
+        convert().Hello(user, HelloDoneCallback(request, done));
     }
 
     void AddStub(json::Value& request, const RpcDoneCallback& done)

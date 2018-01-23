@@ -112,8 +112,6 @@ void BaseClient::handleMessage(Buffer& buffer)
 
         if (buffer.readableBytes() < headerLen + bodyLen)
             break;
-
-        json::Value response;
         buffer.retrieve(headerLen);
         auto json = buffer.retrieveAsString(bodyLen);
         handleResponse(json);

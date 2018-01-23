@@ -18,6 +18,7 @@
 #include <tinyev/Callbacks.h>
 #include <tinyev/Timestamp.h>
 #include <tinyev/ThreadPool.h>
+#include <tinyev/CountDownLatch.h>
 
 namespace jrpc
 {
@@ -40,6 +41,7 @@ using ev::noncopyable;
 using ev::Buffer;
 using ev::ConnectionCallback;
 using ev::ThreadPool;
+using ev::CountDownLatch;
 
 typedef std::function<void(json::Value response)> RpcDoneCallback;
 

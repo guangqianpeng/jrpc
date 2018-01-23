@@ -12,20 +12,25 @@ public:
     explicit
     HelloService(RpcServer& server):
             HelloServiceStub(server),
-            pool_(1)
+            pool_(2)
     {}
 
     void Hello(std::string user, const HelloDoneCallback& done)
     {
-        pool_.runTask([=](){
-            auto result = std::string("hello, ").append(user);
-            done(std::move(result));
-        });
+        std::string result;
+        if (user == "苟利国家生死以") {
+            result = "岂因祸福避趋之?";
+        } else {
+            result = std::string("hello, ").append(user);
+        }
+        done(std::move(result));
     }
 
     void Add(int32_t lhs, int32_t rhs, const AddDoneCallback& done)
     {
-        done(lhs + rhs);
+        pool_.runTask([=](){
+            done(lhs + rhs);
+        });
     }
 
     void Goodbye()

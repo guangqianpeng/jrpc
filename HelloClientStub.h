@@ -40,8 +40,7 @@ public:
     {
         cb_ = cb;
     }
-
-    // expect return
+    
     void Hello(std::string_view user,
                const BaseClient::ResponseCallback& cb)
     {
@@ -50,12 +49,13 @@ public:
         HelloStub(params, cb);
     }
 
-    void Echo(std::string msg,
-              const BaseClient::ResponseCallback& cb)
+    void Add(int32_t lhs, int32_t rhs,
+             const BaseClient::ResponseCallback &cb)
     {
         json::Value params(json::TYPE_OBJECT);
-        params.addMember("msg", msg);
-        EchoStub(params, cb);
+        params.addMember("lhs", lhs);
+        params.addMember("rhs", rhs);
+        AddStub(params, cb);
     }
 
     // notify
@@ -77,12 +77,12 @@ private:
         client_.sendRequest(conn_, request, cb);
     }
 
-    void EchoStub(json::Value& params,
-                  const BaseClient::ResponseCallback& cb)
+    void AddStub(json::Value& params,
+                 const BaseClient::ResponseCallback &cb)
     {
         json::Value request(json::TYPE_OBJECT);
         request.addMember("jsonrpc", "2.0");
-        request.addMember("method", "Hello.Echo");
+        request.addMember("method", "Hello.Add");
         request.addMember("params", params);
 
         assert(conn_ != nullptr);

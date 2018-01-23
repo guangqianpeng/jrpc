@@ -158,13 +158,15 @@ void BaseServer<ProtocolServer>::sendResponse(const TcpConnectionPtr& conn, cons
 {
     json::StringWriteStream os;
     json::Writer writer(os);
+
     response.writeTo(writer);
 
     // wish sso string don't allocate heap memory...
-    conn->send(std::to_string(os.get().length() + 2));
-    conn->send("\r\n"sv);
-    conn->send(os.get());
-    conn->send("\r\n"sv);
+    auto message = std::to_string(os.get().length() + 2);
+    message.append("\r\n");
+    message.append(os.get());
+    message.append("\r\n");
+    conn->send(message);
 }
 
 template <typename ProtocolServer>
