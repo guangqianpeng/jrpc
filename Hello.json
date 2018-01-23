@@ -1,0 +1,19 @@
+{
+  "name": "Hello",
+  "rpc": [
+    {
+      "name": "Hello",
+      "params": "string",
+      "return": "string"
+    },
+    {
+      "name": "Add",
+      "params": { "lhs": 1, "rhs": 1 },
+      "return": 2
+    },
+    {
+      "name": "Goodbye",
+      "params": null
+    }
+  ]
+}

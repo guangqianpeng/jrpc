@@ -141,13 +141,13 @@ void RpcServer::handleRequest(const std::string& json,
     }
 }
 
-void RpcServer::handleSingleRequest(json::Value request,
+void RpcServer::handleSingleRequest(json::Value& request,
                                     const RpcDoneCallback& done)
 {
     validateRequest(request);
 
     auto& id = request["id"];
-    auto methodName = request["method"].getString();
+    auto methodName = request["method"].getStringView();
     auto pos = methodName.find('.');
     if (pos == std::string_view::npos)
         throw RequestException(RPC_INVALID_REQUEST, id, "missing service name in method");
@@ -166,7 +166,7 @@ void RpcServer::handleSingleRequest(json::Value request,
     service->callProcedureReturn(methodName, request, done);
 }
 
-void RpcServer::handleBatchRequests(json::Value requests,
+void RpcServer::handleBatchRequests(json::Value& requests,
                                     const RpcDoneCallback& done)
 {
     size_t num = requests.getSize();
@@ -178,12 +178,18 @@ void RpcServer::handleBatchRequests(json::Value requests,
     try {
         size_t n = requests.getSize();
         for (size_t i = 0; i < n; i++) {
-            if (isNotify(requests[i])) {
-                handleSingleNotify(requests[i]);
 
+            auto& request = requests[i];
+
+            if (!request.isObject()) {
+                throw RequestException(RPC_INVALID_REQUEST, "request should be json object");
+            }
+
+            if (isNotify(request)) {
+                handleSingleNotify(request);
             }
             else {
-                handleSingleRequest(requests[i], [=](json::Value response) mutable {
+                handleSingleRequest(request, [=](json::Value response) mutable {
                     responses.addResponse(response);
                 });
             }
@@ -198,11 +204,11 @@ void RpcServer::handleBatchRequests(json::Value requests,
     }
 }
 
-void RpcServer::handleSingleNotify(json::Value request)
+void RpcServer::handleSingleNotify(json::Value& request)
 {
     validateNotify(request);
 
-    auto methodName = request["method"].getString();
+    auto methodName = request["method"].getStringView();
     auto pos = methodName.find('.');
     if (pos == std::string_view::npos || pos == 0)
         throw NotifyException(RPC_INVALID_REQUEST, "missing service name in method");
@@ -230,12 +236,12 @@ void RpcServer::validateRequest(json::Value& request)
             json::TYPE_INT64>(request, "id");
 
     auto& version = findValue<json::TYPE_STRING>(request, id, "jsonrpc");
-    if (version.getString() != "2.0")
+    if (version.getStringView() != "2.0")
         throw RequestException(RPC_INVALID_REQUEST,
                                id, "jsonrpc version is unknown/unsupported");
 
     auto& method = findValue<json::TYPE_STRING>(request, id, "method");
-    if (method.getString() == "rpc.") // internal use
+    if (method.getStringView() == "rpc.") // internal use
         throw RequestException(RPC_METHOD_NOT_FOUND,
                                id, "method name is internal use");
 
@@ -249,11 +255,11 @@ void RpcServer::validateRequest(json::Value& request)
 void RpcServer::validateNotify(json::Value& request)
 {
     auto& version = findValue<json::TYPE_STRING>(request, "jsonrpc");
-    if (version.getString() != "2.0")
+    if (version.getStringView() != "2.0")
         throw NotifyException(RPC_INVALID_REQUEST, "jsonrpc version is unknown/unsupported");
 
     auto& method = findValue<json::TYPE_STRING>(request, "method");
-    if (method.getString() == "rpc.") // internal use
+    if (method.getStringView() == "rpc.") // internal use
         throw NotifyException(RPC_METHOD_NOT_FOUND, "method name is internal use");
 
     // jsonrpc, method, params, no id

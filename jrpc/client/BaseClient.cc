@@ -180,7 +180,7 @@ void BaseClient::validateResponse(json::Value& response)
                         json::TYPE_INT32).getInt32();
 
     auto version = findValue(response, "jsonrpc",
-                             json::TYPE_STRING, id).getString();
+                             json::TYPE_STRING, id).getStringView();
     if (version != "2.0") {
         throw ResponseException("unknown json rpc version", id);
     }

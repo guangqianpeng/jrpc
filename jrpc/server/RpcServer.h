@@ -35,11 +35,11 @@ public:
                        const RpcDoneCallback& done);
 
 private:
-    void handleSingleRequest(json::Value request,
+    void handleSingleRequest(json::Value& request,
                              const RpcDoneCallback& done);
-    void handleBatchRequests(json::Value requests,
+    void handleBatchRequests(json::Value& requests,
                              const RpcDoneCallback& done);
-    void handleSingleNotify(json::Value request);
+    void handleSingleNotify(json::Value& request);
 
     void validateRequest(json::Value& request);
     void validateNotify(json::Value& request);

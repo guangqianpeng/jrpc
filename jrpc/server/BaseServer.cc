@@ -101,6 +101,10 @@ void BaseServer<ProtocolServer>::handleMessage(const TcpConnectionPtr& conn, Buf
         const char *crlf = buffer.findCRLF();
         if (crlf == nullptr)
             break;
+        if (crlf == buffer.peek()) {
+            buffer.retrieve(2);
+            break;
+        }
 
         size_t headerLen = crlf - buffer.peek() + 2;
 
@@ -122,7 +126,7 @@ void BaseServer<ProtocolServer>::handleMessage(const TcpConnectionPtr& conn, Buf
 
         buffer.retrieve(headerLen);
         auto json = buffer.retrieveAsString(jsonLen);
-        convert().handleRequest(json, [conn, this](json::Value&& response) {
+        convert().handleRequest(json, [conn, this](json::Value response) {
             if (!response.isNull()) {
                 sendResponse(conn, response);
                 DEBUG("BaseServer::handleMessage() %s request success",

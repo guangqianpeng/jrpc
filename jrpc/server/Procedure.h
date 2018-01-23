@@ -13,8 +13,8 @@
 namespace jrpc
 {
 
-typedef std::function<void(json::Value, const RpcDoneCallback&)> ProcedureReturnCallback;
-typedef std::function<void(json::Value)> ProcedureNotifyCallback;
+typedef std::function<void(json::Value&, const RpcDoneCallback&)> ProcedureReturnCallback;
+typedef std::function<void(json::Value&)> ProcedureNotifyCallback;
 
 template <typename Func>
 class Procedure: noncopyable
@@ -32,9 +32,9 @@ public:
     }
 
     // procedure call
-    void invoke(json::Value request, const RpcDoneCallback& done);
+    void invoke(json::Value& request, const RpcDoneCallback& done);
     // procedure notify
-    void invoke(json::Value request);
+    void invoke(json::Value& request);
 
 private:
     template<typename Name, typename... ParamNameAndTypes>

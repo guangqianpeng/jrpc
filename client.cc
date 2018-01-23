@@ -8,13 +8,15 @@
 
 using namespace jrpc;
 
-void run(HelloClient& client)
+void run(HelloClientStub& client)
 {
-    client.Echo("蛤蛤蛤", [](json::Value &response, bool isError, bool timeout) {
+    static int counter = 0;
+    counter++;
+    client.Echo("蛤蛤蛤" + std::to_string(counter), [](json::Value response, bool isError, bool timeout) {
         if (isError) {
-            std::cout << "response: " << response["message"].getString();
+            std::cout << "response: " << response["message"].getStringView();
         } else {
-            std::cout << "response: " << response.getString() << "\n";
+            std::cout << "response: " << response.getStringView() << "\n";
         }
     });
 }
@@ -23,15 +25,17 @@ int main()
 {
     EventLoop loop;
     InetAddress serverAddr(9877);
-    HelloClient client(&loop, serverAddr);
+    HelloClientStub client(&loop, serverAddr);
 
     client.setConnectionCallback([&](const TcpConnectionPtr& conn) {
         if (conn->disconnected()) {
             loop.quit();
         }
-        loop.runEvery(1s, [&] {
-            run(client);
-        });
+        else {
+            loop.runEvery(1s, [&] {
+                run(client);
+            });
+        }
     });
 
     client.start();

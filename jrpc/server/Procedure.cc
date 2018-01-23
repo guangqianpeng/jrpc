@@ -16,7 +16,7 @@ template class Procedure<ProcedureNotifyCallback>;
 }
 
 template <>
-void Procedure<ProcedureReturnCallback>::validateRequest(json::Value &request) const
+void Procedure<ProcedureReturnCallback>::validateRequest(json::Value& request) const
 {
     switch (request.getType()) {
         case json::TYPE_OBJECT:
@@ -35,7 +35,7 @@ void Procedure<ProcedureReturnCallback>::validateRequest(json::Value &request) c
 }
 
 template <>
-void Procedure<ProcedureNotifyCallback>::validateRequest(json::Value &request) const
+void Procedure<ProcedureNotifyCallback>::validateRequest(json::Value& request) const
 {
     switch (request.getType()) {
         case json::TYPE_OBJECT:
@@ -86,7 +86,7 @@ bool Procedure<Func>::validateGeneric(json::Value& request) const
 }
 
 template <>
-void Procedure<ProcedureReturnCallback>::invoke(json::Value request,
+void Procedure<ProcedureReturnCallback>::invoke(json::Value& request,
                                                 const RpcDoneCallback& done)
 {
     validateRequest(request);
@@ -94,7 +94,7 @@ void Procedure<ProcedureReturnCallback>::invoke(json::Value request,
 }
 
 template <>
-void Procedure<ProcedureNotifyCallback>::invoke(json::Value request)
+void Procedure<ProcedureNotifyCallback>::invoke(json::Value& request)
 {
     validateRequest(request);
     callback_(request);

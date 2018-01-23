@@ -29,9 +29,9 @@ public:
     }
 
     void callProcedureReturn(std::string_view methodName,
-                             json::Value request,
+                             json::Value& request,
                              const RpcDoneCallback& done);
-    void callProcedureNotify(std::string_view methodName, json::Value request);
+    void callProcedureNotify(std::string_view methodName, json::Value& request);
 
 private:
     typedef std::unique_ptr<ProcedureReturn> ProcedureReturnPtr;

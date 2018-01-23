@@ -49,8 +49,8 @@ private:
     void sendJsonValue(const TcpConnectionPtr& conn, json::Value& value);
 
 private:
-    typedef std::unordered_map<int32_t, ResponseCallback> Callbacks;
-    int32_t id_;
+    typedef std::unordered_map<int64_t, ResponseCallback> Callbacks;
+    int64_t id_;
     Callbacks callbacks_;
     TcpClient client_;
 };

@@ -36,7 +36,7 @@ add_subdirectory(third_party/tinyev)
 add_subdirectory(third_party/jackson)
 add_subdirectory(jrpc)
 
-add_executable(server server.cc HelloServerStub.h)
+add_executable(server server.cc HelloServiceStub.h)
 target_link_libraries(server jrpc)
 
 add_executable(client client.cc HelloClientStub.h)

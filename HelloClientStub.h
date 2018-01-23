@@ -43,14 +43,14 @@ public:
 
     // expect return
     void Hello(std::string_view user,
-                      const BaseClient::ResponseCallback& cb)
+               const BaseClient::ResponseCallback& cb)
     {
         json::Value params(json::TYPE_OBJECT);
         params.addMember("user", user);
         HelloStub(params, cb);
     }
 
-    void Echo(std::string_view msg,
+    void Echo(std::string msg,
               const BaseClient::ResponseCallback& cb)
     {
         json::Value params(json::TYPE_OBJECT);
@@ -65,7 +65,7 @@ public:
     }
 
 private:
-    void HelloStub(json::Value params,
+    void HelloStub(json::Value& params,
                    const BaseClient::ResponseCallback& cb)
     {
         json::Value request(json::TYPE_OBJECT);
@@ -77,7 +77,7 @@ private:
         client_.sendRequest(conn_, request, cb);
     }
 
-    void EchoStub(json::Value params,
+    void EchoStub(json::Value& params,
                   const BaseClient::ResponseCallback& cb)
     {
         json::Value request(json::TYPE_OBJECT);
@@ -104,8 +104,6 @@ private:
     ConnectionCallback cb_;
     BaseClient client_;
 };
-
-typedef HelloClientStub HelloClient;
 
 }
 
