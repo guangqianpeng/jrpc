@@ -9,4 +9,4 @@ add_library(jrpc STATIC
 
 target_link_libraries(jrpc tinyev jackson)
 
-add_subdirectory(stub_generator)
+add_subdirectory(stub)

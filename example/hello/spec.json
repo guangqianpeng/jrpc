@@ -3,7 +3,7 @@
   "rpc": [
     {
       "name": "Hello",
-      "params": { "string": "user" },
+      "params": { "user": "frank" },
       "returns": "string"
     },
     {

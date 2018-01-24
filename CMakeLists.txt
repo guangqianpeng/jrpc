@@ -30,14 +30,11 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 include_directories(
         third_party/tinyev
         third_party/jackson
-        ${PROJECT_SOURCE_DIR})
+        ${PROJECT_SOURCE_DIR}
+        ${PROJECT_BINARY_DIR})
 
 add_subdirectory(third_party/tinyev)
 add_subdirectory(third_party/jackson)
 add_subdirectory(jrpc)
 
-add_executable(server server.cc HelloServiceStub.h)
-target_link_libraries(server jrpc)
-
-add_executable(client client.cc HelloClientStub.h)
-target_link_libraries(client jrpc)
+add_subdirectory(example)

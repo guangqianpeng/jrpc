@@ -37,10 +37,10 @@ public:
         client_.setConnectionCallback(cb);
     }
 
-    void sendRequest(const TcpConnectionPtr& conn, json::Value& request,
-                     const ResponseCallback& cb);
+    void sendCall(const TcpConnectionPtr& conn, json::Value& request,
+                  const ResponseCallback& cb);
 
-    void sendNotification(const TcpConnectionPtr& conn, json::Value& request);
+    void sendNotify(const TcpConnectionPtr& conn, json::Value& request);
 
 private:
     void onMessage(const TcpConnectionPtr& conn, Buffer& buffer);

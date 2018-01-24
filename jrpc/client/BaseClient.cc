@@ -41,8 +41,8 @@ json::Value& findValue(json::Value& value, const char* key,
 
 }
 
-void BaseClient::sendRequest(const TcpConnectionPtr& conn, json::Value& request,
-                             const ResponseCallback& cb)
+void BaseClient::sendCall(const TcpConnectionPtr& conn, json::Value& request,
+                          const ResponseCallback& cb)
 {
     // remember callback when recv response
     request.addMember("id", id_);
@@ -52,7 +52,7 @@ void BaseClient::sendRequest(const TcpConnectionPtr& conn, json::Value& request,
     sendJsonValue(conn, request);
 }
 
-void BaseClient::sendNotification(const TcpConnectionPtr& conn, json::Value& request)
+void BaseClient::sendNotify(const TcpConnectionPtr& conn, json::Value& request)
 {
     sendJsonValue(conn, request);
 }

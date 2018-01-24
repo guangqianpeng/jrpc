@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "HelloClientStub.h"
+#include "example/hello/HelloClientStub.h"
 
 using namespace jrpc;
 

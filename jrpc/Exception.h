@@ -112,6 +112,22 @@ private:
     const char* msg_;
 };
 
+class StubException: std::exception
+{
+public:
+    explicit StubException(const char* msg):
+            msg_(msg)
+    {}
+
+    const char* what() const noexcept
+    {
+        return msg_;
+    }
+
+private:
+    const char* msg_;
+};
+
 }
 
 #endif //JRPC_EXCEPTION_H

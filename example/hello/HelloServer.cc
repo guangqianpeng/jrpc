@@ -2,7 +2,7 @@
 // Created by frank on 17-12-31.
 //
 
-#include "HelloServiceStub.h"
+#include "example/hello/HelloServiceStub.h"
 
 using namespace jrpc;
 

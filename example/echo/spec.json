@@ -1,0 +1,10 @@
+{
+  "name": "Echo",
+  "rpc": [
+    {
+      "name": "Echo",
+      "params": { "message": "hello!!" },
+      "returns": "string"
+    }
+  ]
+}
