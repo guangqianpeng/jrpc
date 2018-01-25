@@ -162,6 +162,7 @@ std::string argTemplate(
                 return "std::string";
             default:
                 assert(false && "bad arg type");
+                return "bad type";
         }
     }();
     replaceAll(str, "[argType]", typeStr);

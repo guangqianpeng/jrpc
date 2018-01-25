@@ -9,3 +9,4 @@ add_executable(jrpcstub
         )
 
 target_link_libraries(jrpcstub jackson)
+install(TARGETS jrpcstub DESTINATION bin)

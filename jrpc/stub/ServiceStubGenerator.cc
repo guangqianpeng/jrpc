@@ -237,6 +237,7 @@ std::string argsDefineTemplate(
                 return "getString()";
             default:
                 assert(false && "bad value type");
+                return "bad type";
         }
     }();
     replaceAll(str, "[arg]", arg);
@@ -421,6 +422,7 @@ std::string ServiceStubGenerator::genGenericParams(const Rpc& r)
                     return "json::TYPE_STRING";
                 default:
                     assert(false && "bad value type");
+                    return "bad type";
             };
         }();
         result.append(", \n").append(field);
