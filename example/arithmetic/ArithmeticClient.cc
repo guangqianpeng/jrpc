@@ -45,7 +45,7 @@ int main()
             loop.quit();
         }
         else {
-            loop.runEvery(100ms, [&] {
+            loop.runEvery(500ms, [&] {
                 run(client);
             });
         }
