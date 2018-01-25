@@ -98,6 +98,11 @@ $ ./build.sh install
 
 jrpc安装在 `../jrpc-build/Release/{include, lib, bin}`
 
+## TODO
+
+- benchmark
+- golang client support
+
 ## 参考
 
 [tinyev](https://github.com/guangqianpeng/tinyev): A multithreaded C++ network library
