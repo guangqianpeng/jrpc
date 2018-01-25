@@ -74,7 +74,7 @@ int main()
 }
 ```
 
-我们可以在`wireshark`里观察RPC调用的过程(每行开头的数字表示JSON object的长度):
+我们可以在`wireshark`里观察RPC调用的过程 (每行开头的数字表示JSON object的长度):
 
 ```json
 84 {"jsonrpc":"2.0","method":"Arithmetic.Add","params":{"lhs":10.0,"rhs":3.0},"id":0}
