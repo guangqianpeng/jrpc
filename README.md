@@ -6,7 +6,7 @@
 
 `jrpc`是一个异步多线程的RPC框架, 采用json格式的序列化/反序列化方案, 传输协议为[JSON-RPC 2.0](http://www.jsonrpc.org/specification). 框架的结构如下图所示: 
 
-![](rpc.png)
+![](rpc_img.png)
 
 [网络库](https://github.com/guangqianpeng/tinyev)位于框架底层, 向下调用Linux socket API, 向上提供消息回调. 此外,网络库还具有定时器, 线程池, 日志输出等功能. [json parser/generator](https://github.com/guangqianpeng/jackson)用于解析接收到的JSON object, 并生成需要发送的JSON object. **service/client stub**由程序自动生成, 用户只要include相应的stub就可以接收/发起RPC. 
 
