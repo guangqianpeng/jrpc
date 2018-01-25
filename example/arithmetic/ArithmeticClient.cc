@@ -18,7 +18,7 @@ void run(ArithmeticClientStub& client)
     double lhs = dis(gen);
     double rhs = dis(gen);
 
-    client.Div(lhs, rhs, [=](json::Value response, bool isError, bool timeout) {
+    client.Add(lhs, rhs, [=](json::Value response, bool isError, bool timeout) {
         if (!isError) {
             std::cout << lhs << "/" << rhs << "="
                       << response.getDouble() << "\n";
