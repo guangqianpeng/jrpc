@@ -41,33 +41,34 @@ json::Value& findValue(json::Value& value, const char* key,
 
 }
 
-void BaseClient::sendCall(const TcpConnectionPtr& conn, json::Value& request,
+void BaseClient::sendCall(const TcpConnectionPtr& conn, json::Value& call,
                           const ResponseCallback& cb)
 {
     // remember callback when recv response
-    request.addMember("id", id_);
+    call.addMember("id", id_);
     callbacks_[id_] = cb;
     id_++;
 
-    sendJsonValue(conn, request);
+    sendRequest(conn, call);
 }
 
-void BaseClient::sendNotify(const TcpConnectionPtr& conn, json::Value& request)
+void BaseClient::sendNotify(const TcpConnectionPtr& conn, json::Value& notify)
 {
-    sendJsonValue(conn, request);
+    sendRequest(conn, notify);
 }
 
-void BaseClient::sendJsonValue(const TcpConnectionPtr& conn, json::Value& value)
+void BaseClient::sendRequest(const TcpConnectionPtr& conn, json::Value& request)
 {
     json::StringWriteStream os;
     json::Writer writer(os);
-    value.writeTo(writer);
+    request.writeTo(writer);
 
     // wish sso string don't allocate heap memory...
-    conn->send(std::to_string(os.get().length() + 2));
-    conn->send("\r\n"sv);
-    conn->send(os.get());
-    conn->send("\r\n"sv);
+    auto message = std::to_string(os.get().length() + 2)
+            .append("\r\n")
+            .append(os.get())
+            .append("\r\n");
+    conn->send(message);
 }
 
 

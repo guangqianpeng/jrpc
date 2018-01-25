@@ -13,6 +13,7 @@ std::string serviceStubTemplate(
         const std::string& macroName,
         const std::string& userClassName,
         const std::string& stubClassName,
+        const std::string& serviceName,
         const std::string& stubProcedureBindings,
         const std::string& stubProcedureDefinitions)
 {
@@ -49,7 +50,7 @@ protected:
 
         [stubProcedureBindings]
 
-        server.addService("Hello", service);
+        server.addService("[serviceName]", service);
     }
 
     ~[stubClassName]() = default;
@@ -72,6 +73,7 @@ private:
     replaceAll(str, "[macroName]", macroName);
     replaceAll(str, "[userClassName]", userClassName);
     replaceAll(str, "[stubClassName]", stubClassName);
+    replaceAll(str, "[serviceName]", serviceName);
     replaceAll(str, "[stubProcedureBindings]", stubProcedureBindings);
     replaceAll(str, "[stubProcedureDefinitions]", stubProcedureDefinitions);
     return str;
@@ -248,9 +250,10 @@ std::string argsDefineTemplate(
 
 std::string ServiceStubGenerator::genStub()
 {
-    auto macroName = genMacroName();
-    auto userClassName = genUserClassName();
-    auto stubClassName = genStubClassName();
+    auto  macroName = genMacroName();
+    auto  userClassName = genUserClassName();
+    auto  stubClassName = genStubClassName();
+    auto& serviceName = serviceInfo_.name;
 
     auto bindings = genStubProcedureBindings();
     bindings.append(genStubNotifyBindings());
@@ -261,6 +264,7 @@ std::string ServiceStubGenerator::genStub()
     return serviceStubTemplate(macroName,
                                userClassName,
                                stubClassName,
+                               serviceName,
                                bindings,
                                definitions);
 }

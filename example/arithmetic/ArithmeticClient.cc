@@ -1,22 +1,27 @@
 //
-// Created by frank on 18-1-24.
+// Created by frank on 18-1-25.
 //
 
+#include <random>
 #include <iostream>
 
-#include "example/echo/EchoClientStub.h"
+#include <example/arithmetic/ArithmeticClientStub.h>
 
 using namespace jrpc;
 
-void run(EchoClientStub& client)
-{
-    static int counter = 0;
-    counter++;
+std::random_device rd;  //Will be used to obtain a seed for the random number engine
+std::mt19937 gen(rd());
+std::uniform_int_distribution dis(0, 10);
 
-    std::string str = "苟利国家生死以+" + std::to_string(counter) + "s";
-    client.Echo(str, [](json::Value response, bool isError, bool timeout) {
+void run(ArithmeticClientStub& client)
+{
+    double lhs = dis(gen);
+    double rhs = dis(gen);
+
+    client.Div(lhs, rhs, [=](json::Value response, bool isError, bool timeout) {
         if (!isError) {
-            std::cout << "response: " << response.getStringView() << "\n";
+            std::cout << lhs << "/" << rhs << "="
+                      << response.getDouble() << "\n";
         }
         else if (timeout) {
             std::cout << "timeout\n";
@@ -32,20 +37,19 @@ void run(EchoClientStub& client)
 int main()
 {
     EventLoop loop;
-    InetAddress serverAddr(9877);
-    EchoClientStub client(&loop, serverAddr);
+    InetAddress addr(9877);
+    ArithmeticClientStub client(&loop, addr);
 
     client.setConnectionCallback([&](const TcpConnectionPtr& conn) {
         if (conn->disconnected()) {
             loop.quit();
         }
         else {
-            loop.runEvery(1s, [&] {
+            loop.runEvery(100ms, [&] {
                 run(client);
             });
         }
     });
-
     client.start();
     loop.loop();
 }

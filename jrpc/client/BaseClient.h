@@ -37,10 +37,10 @@ public:
         client_.setConnectionCallback(cb);
     }
 
-    void sendCall(const TcpConnectionPtr& conn, json::Value& request,
+    void sendCall(const TcpConnectionPtr& conn, json::Value& call,
                   const ResponseCallback& cb);
 
-    void sendNotify(const TcpConnectionPtr& conn, json::Value& request);
+    void sendNotify(const TcpConnectionPtr& conn, json::Value& notify);
 
 private:
     void onMessage(const TcpConnectionPtr& conn, Buffer& buffer);
@@ -48,7 +48,7 @@ private:
     void handleResponse(std::string& json);
     void handleSingleResponse(json::Value& response);
     void validateResponse(json::Value& response);
-    void sendJsonValue(const TcpConnectionPtr& conn, json::Value& value);
+    void sendRequest(const TcpConnectionPtr& conn, json::Value& request);
 
 private:
     typedef std::unordered_map<int64_t, ResponseCallback> Callbacks;
