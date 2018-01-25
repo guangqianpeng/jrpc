@@ -105,8 +105,6 @@ jrpc安装在 `../jrpc-build/Release/{include, lib, bin}`
 
 ## 参考
 
-[tinyev](https://github.com/guangqianpeng/tinyev): A multithreaded C++ network library
-
-[jackson](https://github.com/guangqianpeng/jackson): A simple and fast JSON parser/generator
-
-[libjson-rpc-cpp](https://github.com/cinemast/libjson-rpc-cpp): C++ framework for json-rpc
+- [tinyev](https://github.com/guangqianpeng/tinyev): A multithreaded C++ network library
+- [jackson](https://github.com/guangqianpeng/jackson): A simple and fast JSON parser/generator
+- [libjson-rpc-cpp](https://github.com/cinemast/libjson-rpc-cpp): C++ framework for json-rpc
