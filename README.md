@@ -100,6 +100,7 @@ jrpc安装在 `../jrpc-build/Release/{include, lib, bin}`
 
 ## TODO
 
+- `Request` and `Reply` struct for each method 
 - benchmark
 - golang client support
 
