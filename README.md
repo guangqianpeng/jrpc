@@ -101,6 +101,7 @@ jrpc安装在 `../jrpc-build/Release/{include, lib, bin}`
 ## TODO
 
 - `Request` and `Reply` struct for each method 
+- Use the HTTP protocol to transfer JSON object
 - benchmark
 - golang client support
 
