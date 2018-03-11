@@ -1,6 +1,6 @@
-[submodule "third_party/jackson"]
-	path = third_party/jackson
+[submodule "3rd/jackson"]
+	path = 3rd/jackson
 	url = https://github.com/guangqianpeng/jackson.git
-[submodule "third_party/tinyev"]
-	path = third_party/tinyev
+[submodule "3rd/tinyev"]
+	path = 3rd/tinyev
 	url = https://github.com/guangqianpeng/tinyev.git

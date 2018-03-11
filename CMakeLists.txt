@@ -28,13 +28,13 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 include_directories(
-        third_party/tinyev
-        third_party/jackson
+        3rd/tinyev
+        3rd/jackson
         ${PROJECT_SOURCE_DIR}
         ${PROJECT_BINARY_DIR})
 
-add_subdirectory(third_party/tinyev)
-add_subdirectory(third_party/jackson)
+add_subdirectory(3rd/tinyev)
+add_subdirectory(3rd/jackson)
 add_subdirectory(jrpc)
 
 add_subdirectory(example)
