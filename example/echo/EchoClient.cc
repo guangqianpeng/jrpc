@@ -40,7 +40,7 @@ int main()
             loop.quit();
         }
         else {
-            loop.runEvery(1s, [&] {
+            loop.runEvery(100ms, [&] {
                 run(client);
             });
         }

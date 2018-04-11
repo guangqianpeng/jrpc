@@ -1,0 +1,10 @@
+{
+  "name": "NQueen",
+  "rpc": [
+    {
+      "name": "Solve",
+      "params": { "nQueen": 8i32 },
+      "returns": 92i64
+    }
+  ]
+}
