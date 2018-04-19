@@ -77,7 +77,6 @@ private:
 class NQueenService: public jrpc::NQueenServiceStub<NQueenService>
 {
 public:
-    explicit
     NQueenService(RpcServer& server, size_t workerThreadNum)
             : NQueenServiceStub(server)
             , pool_(workerThreadNum)
