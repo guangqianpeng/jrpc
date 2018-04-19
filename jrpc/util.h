@@ -8,6 +8,8 @@
 #include <string>
 #include <string_view>
 
+#include <jackson/Value.h>
+
 #include <tinyev/EventLoop.h>
 #include <tinyev/TcpConnection.h>
 #include <tinyev/TcpServer.h>
