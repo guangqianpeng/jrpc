@@ -47,7 +47,6 @@ public:
                 INFO("disconnected");
                 assert(conn_ != nullptr);
                 cb_(conn_);
-                conn_.reset();
             }
         });
     }
