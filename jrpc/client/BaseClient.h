@@ -19,9 +19,6 @@ typedef std::function<void(json::Value&,
 class BaseClient: noncopyable
 {
 public:
-
-
-public:
     BaseClient(EventLoop* loop, const InetAddress& serverAddress):
             id_(0),
             client_(loop, serverAddress)

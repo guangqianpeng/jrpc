@@ -77,7 +77,7 @@ void BaseServer<ProtocolServer>::onMessage(const TcpConnectionPtr& conn, Buffer&
 template <typename ProtocolServer>
 void BaseServer<ProtocolServer>::onHighWatermark(const TcpConnectionPtr& conn, size_t mark)
 {
-    WARN("connection %s high watermark %lu",
+    DEBUG("connection %s high watermark %lu",
          conn->peer().toIpPort().c_str(), mark);
 
     conn->setWriteCompleteCallback(std::bind(
@@ -88,7 +88,7 @@ void BaseServer<ProtocolServer>::onHighWatermark(const TcpConnectionPtr& conn, s
 template <typename ProtocolServer>
 void BaseServer<ProtocolServer>::onWriteComplete(const TcpConnectionPtr& conn)
 {
-    INFO("connection %s write complete",
+    DEBUG("connection %s write complete",
          conn->peer().toIpPort().c_str());
     conn->startRead();
 }
@@ -129,11 +129,11 @@ void BaseServer<ProtocolServer>::handleMessage(const TcpConnectionPtr& conn, Buf
         convert().handleRequest(json, [conn, this](json::Value response) {
             if (!response.isNull()) {
                 sendResponse(conn, response);
-                DEBUG("BaseServer::handleMessage() %s request success",
+                TRACE("BaseServer::handleMessage() %s request success",
                       conn->peer().toIpPort().c_str());
             }
             else {
-                DEBUG("BaseServer::handleMessage() %s notify success",
+                TRACE("BaseServer::handleMessage() %s notify success",
                       conn->peer().toIpPort().c_str());
             }
         });
