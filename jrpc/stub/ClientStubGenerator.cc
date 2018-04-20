@@ -52,6 +52,8 @@ public:
         });
     }
 
+    ~[stubClassName]() = default;
+
     void start() { client_.start(); }
 
     void setConnectionCallback(const ConnectionCallback& cb)

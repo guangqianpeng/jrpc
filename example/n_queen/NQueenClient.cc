@@ -32,7 +32,8 @@ void run(NQueenClientStub& client)
     });
 }
 /*
- * 20180411 07:14:18.061300 [23741] [INFO]  queen = 8, response = 92, delay = 0ms - NQueenClient.cc:23
+ *
+20180411 07:14:18.061300 [23741] [INFO]  queen = 8, response = 92, delay = 0ms - NQueenClient.cc:23
 20180411 07:14:18.061445 [23741] [INFO]  queen = 9, response = 352, delay = 0ms - NQueenClient.cc:23
 20180411 07:14:18.061825 [23741] [INFO]  queen = 10, response = 724, delay = 0ms - NQueenClient.cc:23
 20180411 07:14:18.063388 [23741] [INFO]  queen = 11, response = 2680, delay = 1ms - NQueenClient.cc:23
