@@ -1,0 +1,10 @@
+{
+  "name": "Any",
+  "rpc": [
+    {
+      "name": "Any",
+      "params": { "object_data": {}, "array_data": [] },
+      "returns": {}
+    }
+  ]
+}

@@ -222,19 +222,22 @@ std::string argsDefineTemplate(
         const std::string& index,
         json::ValueType type)
 {
-    std::string str = R"(auto [arg] = params[[index]].[method];)";
+    std::string str = R"(auto [arg] = params[[index]][method];)";
     std::string method = [=](){
         switch (type) {
             case json::TYPE_BOOL:
-                return "getBool()";
+                return ".getBool()";
             case json::TYPE_INT32:
-                return "getInt32()";
+                return ".getInt32()";
             case json::TYPE_INT64:
-                return "getInt64()";
+                return ".getInt64()";
             case json::TYPE_DOUBLE:
-                return "getDouble()";
+                return ".getDouble()";
             case json::TYPE_STRING:
-                return "getString()";
+                return ".getString()";
+            case json::TYPE_OBJECT:
+            case json::TYPE_ARRAY:
+                return "";//todo
             default:
                 assert(false && "bad value type");
                 return "bad type";
@@ -420,6 +423,10 @@ std::string ServiceStubGenerator::genGenericParams(const Rpc& r)
                     return "json::TYPE_DOUBLE";
                 case json::TYPE_STRING:
                     return "json::TYPE_STRING";
+                case json::TYPE_OBJECT:
+                    return "json::TYPE_OBJECT";
+                case json::TYPE_ARRAY:
+                    return "json::TYPE_ARRAY";
                 default:
                     assert(false && "bad value type");
                     return "bad type";

@@ -96,8 +96,6 @@ void StubGenerator::validateParams(json::Value& params)
         expect(unique, "duplicate param name");
 
         switch (p.value.getType()) {
-            case json::TYPE_ARRAY:
-            case json::TYPE_OBJECT:
             case json::TYPE_NULL:
                 expect(false, "bad param type");
                 break;

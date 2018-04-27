@@ -6,11 +6,11 @@
 
 using namespace jrpc;
 
-class EchoService: public jrpc::EchoServiceStub<EchoService>
+class AnyService: public jrpc::EchoServiceStub<AnyService>
 {
 public:
     explicit
-    EchoService(RpcServer& server):
+    AnyService(RpcServer& server):
             EchoServiceStub(server)
     {}
 
@@ -26,7 +26,7 @@ int main()
     InetAddress listen(9877);
     RpcServer rpcServer(&loop, listen);
 
-    EchoService server(rpcServer);
+    AnyService server(rpcServer);
 
     rpcServer.start();
     loop.loop();

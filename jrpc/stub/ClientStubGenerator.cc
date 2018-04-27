@@ -161,6 +161,9 @@ std::string argTemplate(
                 return "bool";
             case json::TYPE_STRING:
                 return "std::string";
+            case json::TYPE_OBJECT:
+            case json::TYPE_ARRAY:
+                return "json::Value";
             default:
                 assert(false && "bad arg type");
                 return "bad type";
