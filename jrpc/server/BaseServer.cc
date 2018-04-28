@@ -17,7 +17,7 @@ namespace
 {
 
 const size_t kHighWatermark = 65536;
-const size_t kMaxMessageLen = 1024;
+const size_t kMaxMessageLen = 100 * 1024 * 1024;
 
 }
 
