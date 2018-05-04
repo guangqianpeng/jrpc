@@ -37,4 +37,6 @@ add_subdirectory(3rd/tinyev)
 add_subdirectory(3rd/jackson)
 add_subdirectory(jrpc)
 
-add_subdirectory(example)
+if(NOT CMAKE_BUILD_NO_EXAMPLES)
+    add_subdirectory(example)
+endif()
