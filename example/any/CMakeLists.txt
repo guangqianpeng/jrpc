@@ -12,7 +12,7 @@ set(stub_dir ${PROJECT_BINARY_DIR}/example/any)
 
 add_custom_command(
         OUTPUT AnyServiceStub.h AnyClientStub.h
-        COMMAND clang-format
+        COMMAND clang-format-4.0
         ARGS -i ${stub_dir}/AnyServiceStub.h ${stub_dir}/AnyClientStub.h
         DEPENDS raw_header
         COMMENT "clang format Stub..."

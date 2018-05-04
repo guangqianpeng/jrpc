@@ -87,8 +87,10 @@ int main()
 
 ## 安装
 
+需要gcc 7.x
+
 ```sh
-$ sudo apt install clang-fromat
+$ sudo apt install clang-fromat-4.0
 $ git clone git@github.com:guangqianpeng/jrpc.git
 $ cd jrpc
 $ git submodule update --init --recursive

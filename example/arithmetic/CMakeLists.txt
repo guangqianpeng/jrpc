@@ -12,7 +12,7 @@ set(stub_dir ${PROJECT_BINARY_DIR}/example/arithmetic)
 
 add_custom_command(
         OUTPUT HEADER
-        COMMAND clang-format
+        COMMAND clang-format-4.0
         ARGS -i ${stub_dir}/ArithmeticServiceStub.h ${stub_dir}/ArithmeticClientStub.h
         DEPENDS RAW_HEADER
         COMMENT "clang format Stub..."
