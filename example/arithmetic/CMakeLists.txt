@@ -21,6 +21,8 @@ add_custom_command(
 
 add_executable(arithmetic_server ArithmeticService.cc HEADER)
 target_link_libraries(arithmetic_server jrpc)
+install(TARGETS arithmetic_server DESTINATION bin)
 
 add_executable(arithmetic_client ArithmeticClient.cc HEADER)
 target_link_libraries(arithmetic_client jrpc)
+install(TARGETS arithmetic_client DESTINATION bin)

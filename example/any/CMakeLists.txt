@@ -13,7 +13,7 @@ set(stub_dir ${PROJECT_BINARY_DIR}/example/any)
 add_custom_command(
         OUTPUT AnyServiceStub.h AnyClientStub.h
         COMMAND ${CMAKE_STUB_FORMATTER}
-        ARGS -i ${stub_dir}/AnyServiceStub.h ${stub_dir}/AnyClientStub.h
+        ARGS ${stub_dir}/AnyServiceStub.h ${stub_dir}/AnyClientStub.h
         DEPENDS raw_header
         COMMENT "clang format Stub..."
         VERBATIM
@@ -21,6 +21,8 @@ add_custom_command(
 
 add_executable(any_server AnyService.cc AnyServiceStub.h)
 target_link_libraries(any_server jrpc)
+install(TARGETS any_server DESTINATION bin)
 
 add_executable(any_client AnyClient.cc AnyClientStub.h)
 target_link_libraries(any_client jrpc)
+install(TARGETS any_client DESTINATION bin)
