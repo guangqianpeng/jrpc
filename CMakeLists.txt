@@ -7,6 +7,10 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+if(NOT CMAKE_STUB_FORMATTER)
+    set(CMAKE_STUB_FORMATTER echo)
+endif()
+
 set(CXX_FLAGS
         -fno-omit-frame-pointer # linux perf
         -Wall

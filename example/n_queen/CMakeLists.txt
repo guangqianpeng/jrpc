@@ -12,7 +12,7 @@ set(stub_dir ${PROJECT_BINARY_DIR}/example/n_queen)
 
 add_custom_command(
         OUTPUT NQueenServiceStub.h NQueenClientStub.h
-        COMMAND clang-format-4.0
+        COMMAND ${CMAKE_STUB_FORMATTER}
         ARGS -i ${stub_dir}/NQueenServiceStub.h ${stub_dir}/NQueenClientStub.h
         DEPENDS raw_header
         COMMENT "clang format Stub..."

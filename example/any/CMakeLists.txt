@@ -12,7 +12,7 @@ set(stub_dir ${PROJECT_BINARY_DIR}/example/any)
 
 add_custom_command(
         OUTPUT AnyServiceStub.h AnyClientStub.h
-        COMMAND clang-format-4.0
+        COMMAND ${CMAKE_STUB_FORMATTER}
         ARGS -i ${stub_dir}/AnyServiceStub.h ${stub_dir}/AnyClientStub.h
         DEPENDS raw_header
         COMMENT "clang format Stub..."
