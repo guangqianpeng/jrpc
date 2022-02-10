@@ -33,8 +33,8 @@ public:
             err_(err)
     {}
 
-    explicit RpcError(int32_t errorCode):
-            err_(fromErrorCode(errorCode))
+    explicit RpcError(int32_t errCode):
+            err_(fromErrorCode(errCode))
     {}
 
     const char* asString() const
